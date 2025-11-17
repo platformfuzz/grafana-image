@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # Monitor Docker base image
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    ignore:
+      # Block major version updates (e.g., 10.x -> 11.x)
+      # Allow only patch and minor updates within major version
+      - dependency-name: "grafana/grafana"
+        update-types: ["version-update:semver-major"]
