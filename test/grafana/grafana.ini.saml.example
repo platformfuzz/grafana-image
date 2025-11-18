@@ -1,0 +1,77 @@
+# Grafana SAML Configuration Template
+# This is an example configuration file for file-based SAML setup.
+# Works with any SAML 2.0-compliant identity provider (Azure AD, Okta, Auth0, OneLogin, etc.)
+# Note: Environment variables (GF_AUTH_SAML_*) will override these settings.
+
+[paths]
+data = /var/lib/grafana
+logs = /var/log/grafana
+plugins = /var/lib/grafana/plugins
+provisioning = /etc/grafana/provisioning
+
+[server]
+http_port = 3000
+protocol = http
+
+[security]
+admin_user = admin
+admin_password = admin
+
+[users]
+allow_sign_up = false
+
+[log]
+mode = console
+level = info
+
+# SAML Authentication Configuration for Azure AD Enterprise Applications
+[auth.saml]
+# Enable SAML authentication
+enabled = true
+
+# Service Provider (Grafana) certificate and private key paths
+# These files must be mounted as volumes in the container
+certificate_path = /etc/grafana/certs/certificate.cert
+private_key_path = /etc/grafana/certs/private_key.pem
+
+# Identity Provider metadata XML file
+# Download this from your IdP's SAML configuration
+idp_metadata_path = /etc/grafana/saml/metadata.xml
+
+# SAML assertion attribute mappings
+# These map SAML assertion attributes to Grafana user attributes
+# Adjust attribute names based on your IdP's SAML assertion format
+# Example values shown are common Azure AD claim names
+assertion_attribute_name = http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+assertion_attribute_login = http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+assertion_attribute_email = http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+assertion_attribute_groups = http://schemas.microsoft.com/ws/2008/06/identity/claims/groups
+
+# Optional: Role mapping (uncomment and configure as needed)
+# assertion_attribute_role = Role
+# role_values_viewer = viewer, external
+# role_values_editor = editor, developer
+# role_values_admin = admin, operator
+# role_values_grafana_admin = superadmin
+
+# Optional: Organization mapping (uncomment and configure as needed)
+# org_mapping = Engineering:2:Editor, Sales:3:Viewer, *:1:Editor
+
+# Optional: Microsoft Graph API configuration (for users with >150 groups)
+# Uncomment and configure if you need to use Graph API for group retrieval
+# client_id = your-azure-ad-app-registration-client-id
+# client_secret = your-azure-ad-app-registration-client-secret
+# token_url = https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token
+# force_use_graph_api = true
+#
+# Graph API requires:
+# - Separate Azure AD App Registration (not the Enterprise Application)
+# - Permissions: GroupMember.Read.All and User.Read.All
+# - Admin consent granted
+
+# SAML request signing and encryption settings
+# max_issue_delay = 90s
+# metadata_valid_duration = 48h
+
+# Auto-login (set to true to automatically redirect to Azure AD)
+# auto_login = false
